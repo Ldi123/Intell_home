@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,10 +21,12 @@ public class ThridActivity extends Activity implements OnClickListener {
     private EditText et_username;
     private EditText et_phonenum;
     private EditText et_imei;
+    private TextView view1;
+    private  TextView view2;
     private EditText et_ip;
+    private EditText et_Ip;
     private EditText et_room;
     private Button bt_post;
-    private Button bt_test;
     private Button bt_inte;
     private String path;
     private String str1;
@@ -45,30 +47,26 @@ public class ThridActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thrid);
-
+        Toast.makeText(this, "请选择一种个性化定制方式", Toast.LENGTH_SHORT).show();
+       view1=findViewById(R.id.view1);
+       view2=findViewById(R.id.view2);
+       view1.setText("方式1");
+       view2.setText("方式2");
         //my code below
         et_username = (EditText) findViewById(R.id.et_uesrname);
         et_phonenum = (EditText) findViewById(R.id.et_phonenum);
         et_imei=findViewById(R.id.et_imei);
         et_ip = (EditText) findViewById(R.id.et_ip);
+        et_Ip = (EditText) findViewById(R.id.et_Ip);
         et_room = (EditText) findViewById(R.id.et_get);
         bt_post = (Button) findViewById(R.id.bt_post);
-       bt_test=findViewById(R.id.button0);
-       bt_inte=findViewById(R.id.bt_init);
-       bt_test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent inte=new Intent();
-                inte.setClass(ThridActivity.this, FourthActivity.class);
-               startActivity(inte);
-            }
-          });
+        bt_inte=findViewById(R.id.bt_init);
         // 启动按键监听器
       bt_post.setOnClickListener(this);
       bt_inte.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri uri = Uri.parse("http://" +et_ip.getText().toString().trim()+ ":8080//WebTest/Test.html");
+                Uri uri = Uri.parse("http://" +et_Ip.getText().toString().trim()+ ":8080//WebTest/Test.html");
                 Intent intent = new Intent(Intent.ACTION_VIEW,uri);
                 startActivity(intent);
             }

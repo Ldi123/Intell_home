@@ -3,6 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+    <TextView
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        />
+
     <EditText
         android:id="@+id/et_ip"
         android:layout_width="match_parent"
@@ -40,32 +47,44 @@
         />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <Button
-        android:id="@+id/bt_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="提交"
+            android:id="@+id/bt_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="提交"
+            />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/view2"
+        android:layout_marginTop="80dp"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="30dp"
         />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/et_Ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bt_init"
+            android:hint="请输入服务器IP地址"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:inputType="text"
+            />
         <Button
             android:id="@+id/bt_init"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/bt_post"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="访问"
             />
-        <Button
-            android:id="@+id/button0"
-            android:layout_width="wrap_content"
-            android:layout_above="@+id/bt_post"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="测试打开文件列表" />
     </RelativeLayout>
 
 </LinearLayout>
