@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     >
     <TextView
-    android:id="@+id/tv"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="#abcdef"
-    android:gravity="center"
-    android:layout_centerHorizontal="true"
-    android:text=""
-    android:textSize="22sp">
+        android:id="@+id/tv"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#abcdef"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textSize="22sp">
 
-</TextView>
+    </TextView>
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
@@ -27,9 +27,12 @@
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:thumb="@drawable/switch_custom_thumb_selector"
+        android:track="@drawable/switch_custom_track_selector"
         android:layout_centerVertical="true"
         android:layout_centerInParent="true"
+        android:layout_marginTop="20dp"
+        android:switchPadding="20dp"
         />
 </RelativeLayout>
 

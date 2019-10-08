@@ -34,11 +34,11 @@
                 <!--tools:layout_editor_absoluteY="310dp" />-->
 
 
-            <!--<ExpandableListView-->
-                <!--android:id="@+id/list"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content" >-->
-            <!--</ExpandableListView>-->
+            <ExpandableListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </ExpandableListView>
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/vp"
