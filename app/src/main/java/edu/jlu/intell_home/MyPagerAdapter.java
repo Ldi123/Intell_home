@@ -85,6 +85,7 @@ public class MyPagerAdapter extends PagerAdapter {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean is_checked) {
                 if(is_checked){
+
                     if(client==null||!client.isConnected()) {
                         Toast.makeText(mContext,"状态改变！但设备未连接",Toast.LENGTH_SHORT).show();
                         }else{
