@@ -1,17 +1,18 @@
 package edu.jlu.intell_home;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Xml;
-import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 
 import org.apache.commons.codec.binary.Base64;
 import org.xmlpull.v1.XmlPullParser;
@@ -30,9 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -41,22 +40,25 @@ public class FourthActivity extends AppCompatActivity {
     public String web_hash;
     public static final String TAG = "FourthActivity";
     //TextView text;
-    List<Map<String, String>> listGet = new ArrayList<>();
-    Map<String, String> map = new HashMap<>();
     List<RoomBean> list = null;
     RoomBean bean = null;
     List<DeviceBean> sList = null;
     DeviceBean be = null;
-    private ExpandableListView listView;
+    private Context mContext;
+    private TextView txt_title;
+    private FragmentManager fManager = null;
+    private FrameLayout fl_content;
+    private long exitTime = 0;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fourth);
+        setContentView(R.layout.activity_forth);
+        mContext = FourthActivity.this;
+        bindViews();
+
         Intent intent = getIntent();
         String action = intent.getAction();
-        // listView =findViewById(R.id.list);
-        // text = findViewById(R.id.textView);
     if (intent.ACTION_VIEW.equals(action)) {
             Uri uri = intent.getData();
             String str = Uri.decode(uri.getEncodedPath());
@@ -208,27 +210,16 @@ public class FourthActivity extends AppCompatActivity {
             try {
                 /**-----------------------------解析XML文件，HASH验证-------------------------------**/
                 int i = 0;
+                fManager = getFragmentManager();
                 File file = new File("/data/data/edu.jlu.intell_home/abc.xml");
                 // 读取文件-->以流的方式
                 FileInputStream fileInputStream = new FileInputStream(file);
                 final List<RoomBean> Rooms = parseFile(fileInputStream);
-                //获得解析到的结果
-                while ((i < Rooms.size())) {
-                    for (DeviceBean studentGet : Rooms.get(i).getList()) {
-                        map.put("Room_id", Rooms.get(i).getRoom_id());
-                        map.put("Room_name", Rooms.get(i).getRoom_name());
-                        map.put("Device_id", studentGet.getDevice_id());
-                        map.put("Device_name", studentGet.getDevice_name());
-                        map.put("IP", studentGet.getIP());
-                        map.put("Port", studentGet.getPort());
-                        map.put("Type", studentGet.getType());
-                        map.put("state", studentGet.getState());
-                        map.put("code", studentGet.getCode());
-                        listGet.add(map);
-                        i += 1;
-                        map = new HashMap<>();
-                    }
-                }
+                NewListFragment nlFragment = new NewListFragment(fManager, Rooms);
+                FragmentTransaction ft = fManager.beginTransaction();
+                ft.replace(R.id.fl_content, nlFragment);
+                ft.commit();
+
 
                 /**-----------------------------HASH加密IMEI码-----------------------------------**/
                 //找到目标文件
@@ -250,7 +241,7 @@ public class FourthActivity extends AppCompatActivity {
                 strB.append(sss.charAt(11));
                 strB.append(sss.charAt(30));
                 strB.append(sss.charAt(23));
-                setVp(Rooms,strB.toString());
+               // setVp(strB.toString());
             } catch (FileNotFoundException e) {
                 System.out.println("File not found");
                 e.printStackTrace();
@@ -264,27 +255,15 @@ public class FourthActivity extends AppCompatActivity {
         try {
             /**-----------------------------解析XML文件，HASH验证-------------------------------**/
             int i = 0;
+            fManager = getFragmentManager();
             File file = new File("/data/data/edu.jlu.intell_home/abc.xml");
             // 读取文件-->以流的方式
             FileInputStream fileInputStream = new FileInputStream(file);
             final List<RoomBean> Rooms = parseFile(fileInputStream);
-            //获得解析到的结果
-            while ((i < Rooms.size())) {
-                for (DeviceBean studentGet : Rooms.get(i).getList()) {
-                    map.put("Room_id", Rooms.get(i).getRoom_id());
-                    map.put("Room_name", Rooms.get(i).getRoom_name());
-                    map.put("Device_id", studentGet.getDevice_id());
-                    map.put("Device_name", studentGet.getDevice_name());
-                    map.put("IP", studentGet.getIP());
-                    map.put("Port", studentGet.getPort());
-                    map.put("Type", studentGet.getType());
-                    map.put("state", studentGet.getState());
-                    map.put("code", studentGet.getCode());
-                    listGet.add(map);
-                    i += 1;
-                    map = new HashMap<>();
-                }
-            }
+            NewListFragment nlFragment = new NewListFragment(fManager, Rooms);
+            FragmentTransaction ft = fManager.beginTransaction();
+            ft.replace(R.id.fl_content, nlFragment);
+            ft.commit();
 
             /**-----------------------------HASH加密IMEI码-----------------------------------**/
             //找到目标文件
@@ -306,7 +285,7 @@ public class FourthActivity extends AppCompatActivity {
             strB.append(sss.charAt(11));
             strB.append(sss.charAt(30));
             strB.append(sss.charAt(23));
-            setVp(Rooms,strB.toString());
+           // setVp(strB.toString());
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
             e.printStackTrace();
@@ -318,64 +297,30 @@ public class FourthActivity extends AppCompatActivity {
     }
 
 
-// Log.i(TAG, person.toString());
-//                for (int j = 0; j < listGet.size(); j++) {
-//                    String s1 = listGet.get(j).get("Room_name");
-//                    generateBtnList(s1,j);
-//                }
+    private void bindViews() {
+        txt_title =  findViewById(R.id.txt_title);
+        fl_content = findViewById(R.id.fl_content);
+    }
 
 
-
-    private void setVp (List < RoomBean > Rooms,String app_hash) {
-        /**------HASH验证------**/
-        if (app_hash.equals(web_hash)) {
-            List<String> list = new ArrayList<>();
-            for (int i = 0; i < Rooms.size(); i++) {
-                list.add(Rooms.get(i).getRoom_name());
+    //点击回退键的处理：判断Fragment栈中是否有Fragment
+    //没，双击退出程序，否则像是Toast提示
+    //有，popbackstack弹出栈
+    @Override
+    public void onBackPressed() {
+        if (fManager.getBackStackEntryCount() == 0) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                        Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                super.onBackPressed();
             }
-
-            ViewPager vp = (ViewPager) findViewById(R.id.vp);
-            vp.setAdapter(new MyPagerAdapter(this, list, Rooms));
         } else {
-            Toast.makeText(this, "验证时检测到IMEI已改变", Toast.LENGTH_SHORT).show();
-            //声明一个对话框对象
-            AlertDialog dialog;
-            //绑定当前界面窗口
-            dialog = new AlertDialog.Builder(FourthActivity.this).setTitle("IMEI验证错误！")
-                    .setMessage("这可能不是您的手机...")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            FourthActivity.this.finish();
-                        }
-                    }).create();
-            dialog.show();
+            fManager.popBackStack();
+            txt_title.setText("房间列表");
         }
     }
-//
-//    private void getList(int j){
-//        String s0=  listGet.get(j).get("Room_id");
-//        String s1 = listGet.get(j).get("Room_name");
-//        String s2 = listGet.get(j).get("Device_id");
-//        String s3 = listGet.get(j).get("Device_name");
-//        String s4 = listGet.get(j).get("IP");
-//        String s5 = listGet.get(j).get("Port");
-//        String s6 = listGet.get(j).get("Type");
-//        String s7 = listGet.get(j).get("state");
-//        String s8 = listGet.get(j).get("code");
-//        generateBtnList(s3,j);
-//        text.append("Room_id:"+s0 + "\n");
-//        text.append("Room_name:"+s1 + "\n");
-//        text.append("Device_id:" + s2 + "\n");
-//        text.append("Device_name" + s3 + "\n");
-//        text.append("IP:"+s4 + "\n");
-//        text.append("Port:"+s5 + "\n");
-//        text.append("Type:"+s6 + "\n");
-//        text.append("state:"+s7 + "\n");
-//        text.append("code:"+s8 + "\n");
-//        text.append("-----------------\n");
-//        text.append("num:"+j + "\n");
-//    }
 
     private List<RoomBean> parseFile (InputStream is){
         try {
@@ -495,38 +440,14 @@ public class FourthActivity extends AppCompatActivity {
         return null;
     }
 
-
-
-
-
-    /**
-
-     * 解密
-
-     * @param strKey
-
-     * @param content
-
-     * @return
-
-     * @throws Exception
-
-     */
-
+    // 解密
     public static String decrypt(byte[] content,String strKey ) throws Exception {
-
         SecretKeySpec skeySpec = getKey(strKey);
-
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
         IvParameterSpec iv = new IvParameterSpec("0102030405060708".getBytes());
-
         cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-
         byte[] original = cipher.doFinal(content);
-
         String originalString = new String(original);
-
         return originalString;
 
     }
@@ -538,8 +459,6 @@ public class FourthActivity extends AppCompatActivity {
         byte[] arrBTmp = strKey.getBytes();
 
         byte[] arrB = new byte[16]; // 创建一个空的16位字节数组（默认值为0）
-
-
 
         for (int i = 0; i < arrBTmp.length && i < arrB.length; i++) {
 
@@ -596,44 +515,5 @@ public class FourthActivity extends AppCompatActivity {
         return encryptStr.isEmpty() ? null : decrypt(base64Decode(encryptStr), decryptKey);
 
     }
-//    private void generateBtnList(String text,int index) {
-//        LinearLayout mBtnListLayout;
-//        mBtnListLayout = findViewById(R.id.btnListLayout);
-//        Button codeBtn = new Button(this);
-//        setBtnAttribute(mBtnListLayout, codeBtn, text, index, Color.rgb(255, 128, 0), Color.BLACK, 18);
-//        mBtnListLayout.addView(codeBtn);
-//    }
-//
-//    private void setBtnAttribute(LinearLayout mBtnListLayout, final Button codeBtn, String text,  int id, int backGroundColor, int textColor, int textSize) {
-//        if (null == codeBtn) {
-//            return;
-//        }
-//        codeBtn.setBackgroundColor(backGroundColor);
-//        codeBtn.setTextColor((textColor >= 0) ? textColor : Color.BLUE);
-//        codeBtn.setTextSize(textSize);
-//        codeBtn.setId(id);
-//        codeBtn.setText(text);
-//        codeBtn.setGravity(Gravity.CENTER);
-//        codeBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent=new Intent();
-//                intent.setAction("android.intent.action.VIEW");
-//                intent.setData(Uri.parse("http://10.46.190.179:8080/TestWebA/NewFile.jsp"));
-//                startActivity(intent);
-//                Intent inte=new Intent();
-//                inte.setClass(ThridActivity.this, FourthActivity.class);
-//                startActivity(inte);
-//                if(v.getId()==codeBtn.getId()){
-//                    getList(codeBtn.getId());
-//                }
-//            }
-//        });
-//        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-//        rlp.addRule(RelativeLayout.ALIGN_PARENT_START);
-//        rlp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//        codeBtn.setLayoutParams(rlp);
-//        id++;
-//    }
 
 }
