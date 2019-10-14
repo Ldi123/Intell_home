@@ -11,39 +11,30 @@ public class DeviceBean {
     public void setDevice_id(String device_id) {
         Device_id = device_id;
     }
-
     public String getDevice_id() {
         return Device_id;
     }
-
     public void setDevice_name(String device_name) {
         Device_name = device_name;
     }
-
     public String getDevice_name() {
         return Device_name;
     }
-
     public void setIP(String IP) {
         this.IP = IP;
     }
-
     public String getIP() {
         return IP;
     }
-
     public void setPort(String port) {
         Port = port;
     }
-
     public String getPort() {
         return Port;
     }
-
     public void setType(String type) {
         Type = type;
     }
-
     public String getType() {
         return Type;
     }
